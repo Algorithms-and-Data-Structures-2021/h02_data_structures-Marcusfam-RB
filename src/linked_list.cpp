@@ -65,21 +65,21 @@ Element LinkedList::Remove(int index) {
   // Tip 1: рассмотрите случай, когда удаляется элемент в начале списка
   if(index == 0){
       auto curr = head_;
-      auto element = head_->data;
+      auto *element = new Element(head_->data);
       head_ = head_->next;
       delete [] curr;
       size_ -= 1;
-      return element;
+      return *element;
   }
   // Tip 2: используйте функцию find_node(index)
   auto curr = find_node(index - 1);
   auto m = curr->next;
-  auto element = m->data;
+  auto *element = new Element(m->data);
   curr->next = m->next;
   delete [] m;
   size_ -= 1;
   // напишите свой код здесь ...
-  return element;
+  return *element;
 }
 
 void LinkedList::Clear() {
