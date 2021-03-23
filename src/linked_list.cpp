@@ -88,13 +88,14 @@ void LinkedList::Clear() {
       return;
   }
   auto curr = head_;
-  for(int i = 0; i != size_ - 1; i++){
+  for(int i = 0; i != size_; i++){
       head_ = head_->next;
       curr->next = nullptr;
       delete [] curr;
       curr = head_;
   }
-  head_->data = Element::UNINITIALIZED;
+  head_ = new Node(Element::UNINITIALIZED, nullptr);
+  tail_ = head_;
   size_ = 0;
   // напишите свой код здесь ...
 }
