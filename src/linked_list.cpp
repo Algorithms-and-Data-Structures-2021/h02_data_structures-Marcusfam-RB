@@ -12,12 +12,37 @@ void LinkedList::Add(Element e) {
   // Tip 2: есть 2 случая - список пустой и непустой
   // Tip 3: не забудьте обновить поля head и tail
   // напишите свой код здесь ...
+  Node *node = new Node(e, nullptr);
+  if(head_ == nullptr){
+      assert(tail_ == nullptr && size_ == 0);
+      head_ = node;
+      tail_ = node;
+  }
+  else{
+      tail_->next = node;
+      tail_ = tail_->next;
+  }
+  size_ += 1;
 }
 
 void LinkedList::Insert(int index, Element e) {
   internal::check_out_of_range(index, 0, size_ + 1);
-
+    Node *node = new Node(e, nullptr);
   // Tip 1: вставка элементов на позицию size эквивалентно операции добавления в конец
+  if (index == size_ || size_ == 0){
+      Add(e);
+      return;
+  }
+  if (index == 0){
+      node->next = head_;
+      head_ = node;
+      size_ += 1;
+      return;
+  }
+  auto curr = find_node(index - 1);
+  node->next = curr->next;
+  curr->next = node;
+  size_ += 1;
   // Tip 2: рассмотрите несколько случаев:
   //        (1) список пустой,
   //        (2) добавляем в начало списка,
@@ -30,38 +55,95 @@ void LinkedList::Insert(int index, Element e) {
 void LinkedList::Set(int index, Element e) {
   internal::check_out_of_range(index, 0, size_);
   // Tip 1: используйте функцию find_node(index)
+  auto curr = find_node(index);
+  curr->data = e;
   // напишите свой код здесь ...
 }
 
 Element LinkedList::Remove(int index) {
   internal::check_out_of_range(index, 0, size_);
   // Tip 1: рассмотрите случай, когда удаляется элемент в начале списка
+  if(index == 0){
+      auto curr = head_;
+      auto element = head_->data;
+      head_ = head_->next;
+      delete [] curr;
+      size_ -= 1;
+      return element;
+  }
   // Tip 2: используйте функцию find_node(index)
+  auto curr = find_node(index - 1);
+  auto m = curr->next;
+  auto element = m->data;
+  curr->next = m->next;
+  delete [] m;
+  curr = nullptr;
+  size_ -= 1;
   // напишите свой код здесь ...
-  return {};
+  return element;
 }
 
 void LinkedList::Clear() {
   // Tip 1: люди в черном (MIB) пришли стереть вам память
+  if(size_ == 0){
+      return;
+  }
+  auto curr = head_;
+  for(int i = 0; i != size_; i++){
+      head_ = head_->next;
+      curr->next = nullptr;
+      delete [] curr;
+      curr = head_;
+  }
+  head_ = new Node(Element::UNINITIALIZED, nullptr);
+  tail_ = head_;
+  size_ = 0;
   // напишите свой код здесь ...
 }
 
 Element LinkedList::Get(int index) const {
   internal::check_out_of_range(index, 0, size_);
   // напишите свой код здесь ...
-  return {};
+  if(index == 0){
+      return head_->data;
+    }
+  if(index == size_ - 1){
+      return tail_->data;
+    }
+  auto curr = head_;
+  for(int i = 0; i != index; i++){
+      curr = curr->next;
+    }
+  return curr->data;
 }
 
 int LinkedList::IndexOf(Element e) const {
   // напишите свой код здесь ...
-  return {};
+  auto curr = head_;
+    for(int i = 0; i != size_; i++){
+        if(curr->data == e){
+            return i;
+        }
+        curr = curr->next;
+    }
+    return -1;
 }
 
 Node *LinkedList::find_node(int index) const {
   assert(index >= 0 && index < size_);
   // Tip 1: можете сразу обработать случаи поиска начала и конца списка
+  if(index == 0){
+      return head_;
+  }
+  if(index == size_ - 1){
+      return tail_;
+  }
+  auto curr = head_;
+  for(int i = 0; i != index; i++){
+      curr = curr->next;
+    }
   // напишите свой код здесь ...
-  return {};
+  return curr;
 }
 
 // РЕАЛИЗОВАНО
